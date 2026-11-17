@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "synthetic": true,
+  "case": "Moraine Lantern Works fictional quarter",
+  "cutoff": "2030-04-23T14:25:00Z",
+  "entries": [
+    {
+      "id": "pre-release-note",
+      "status": "captured",
+      "path": "evidence/pre-release-note.txt",
+      "published_at": "2030-04-23T14:15:00Z",
+      "captured_at": "2030-04-23T14:18:00Z",
+      "sha256": "ed4c0dd2b688e893fa8ca84b6048441d2d60ca59ab6082c702a6bc493a8464b7"
+    },
+    {
+      "id": "quarterly-statement",
+      "status": "captured",
+      "path": "evidence/quarterly-statement.txt",
+      "published_at": "2030-04-23T14:30:00Z",
+      "captured_at": "2030-04-23T14:32:00Z",
+      "sha256": "79a0417701253eb6ce542f0c38cf5eb8d4d460315fd603b355b4d1ef2288996e"
+    },
+    {
+      "id": "call-transcript",
+      "status": "unavailable",
+      "reason": "No transcript was captured for the fictional event."
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+SYNTHETIC FIXTURE. Moraine Lantern Works is a fictional issuer.
+
+Pre-release schedule note
+The imaginary issuer plans to publish quarterly results at 14:30 UTC.
+The exercise's decision record closes at 14:25 UTC.
