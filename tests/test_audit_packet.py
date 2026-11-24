@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -87,6 +88,52 @@ class PacketAuditTests(unittest.TestCase):
         self.assertEqual(run.returncode, 2)
         self.assertEqual(run.stdout, "")
         self.assertIn("UTC timestamp", run.stderr)
+
+
+class PacketDemoTests(unittest.TestCase):
+    def setUp(self):
+        temporary = TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.example = self.root / "examples" / "fictional-quarter"
+        shutil.copytree(EXAMPLE, self.example)
+        for name in ("audit_packet.py", "demo_packet.py"):
+            shutil.copyfile(ROOT / name, self.root / name)
+        self.scratch = self.root / "scratch"
+        self.scratch.mkdir()
+
+    def run_demo(self):
+        return subprocess.run(
+            [sys.executable, "-B", str(self.root / "demo_packet.py")],
+            cwd=self.scratch, env={**os.environ, "TMPDIR": str(self.scratch)},
+            capture_output=True, text=True, check=False, timeout=10,
+        )
+
+    def test_demo_is_repeatable_and_cleans_up(self):
+        first = self.run_demo()
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertIn("pre-release-note: integrity_error (SHA-256 mismatch.)", first.stdout)
+        self.assertEqual(first.stdout.count("quarterly-statement: late"), 2)
+        self.assertEqual(first.stdout.count("call-transcript: unavailable"), 2)
+        self.assertIn("the full audit matches the baseline", first.stdout)
+        second = self.run_demo()
+        self.assertEqual(second.returncode, 0, second.stderr)
+        self.assertEqual(second.stdout, first.stdout)
+        self.assertEqual(list(self.scratch.iterdir()), [])
+        for source in EXAMPLE.rglob("*"):
+            if source.is_file():
+                copy = self.example / source.relative_to(EXAMPLE)
+                self.assertEqual(copy.read_bytes(), source.read_bytes())
+
+    def test_demo_stops_if_starting_packet_is_damaged(self):
+        schedule = self.example / "evidence" / "pre-release-note.txt"
+        schedule.write_bytes(b"A changed fixture.\n")
+        run = self.run_demo()
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("starting packet differs", run.stderr)
+        self.assertNotIn("After editing", run.stdout)
+        self.assertEqual(schedule.read_bytes(), b"A changed fixture.\n")
+        self.assertEqual(list(self.scratch.iterdir()), [])
 
 
 if __name__ == "__main__":
