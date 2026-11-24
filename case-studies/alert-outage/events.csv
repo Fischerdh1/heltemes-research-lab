@@ -1,0 +1,8 @@
+elapsed_seconds,event
+0.0075,started
+480.0166,receiver_stopped
+600.0128,receiver_restarted
+720.244,sender_killed
+726.0118,sender_restarted
+1100.0214,final_steady_started
+1800.0228,finished

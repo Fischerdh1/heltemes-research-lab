@@ -4,6 +4,8 @@
 
 Which files were available at a research cutoff, and do their contents still match the saved record? This Python command-line tool answers both questions for a fictional earnings packet. It runs offline with the Python standard library.
 
+The [alert delivery case study](case-studies/alert-outage/) follows 702 synthetic alerts through a receiver outage and a sender restart. Its public timeline and offline checker let you reproduce the queue and recovery figures.
+
 ## Quick start
 
 Use Python 3.11 or newer.
