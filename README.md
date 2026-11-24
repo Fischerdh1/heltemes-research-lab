@@ -22,6 +22,20 @@ The example records a decision cutoff of **14:25 UTC**.
 | Quarterly statement | Published 14:30, captured 14:32 | Late |
 | Call transcript | No capture | Unavailable |
 
+## Try changing the evidence
+
+```sh
+python3 -B demo_packet.py
+```
+
+The drill copies the fictional packet into a temporary directory and runs the same audit three times.
+
+1. In the original packet, the schedule qualifies because it was captured at 14:18 UTC. The quarterly statement passes its fingerprint check and still misses the 14:25 cutoff.
+2. The drill adds one line to the copied schedule while keeping the manifest fixed. Its capture time still precedes the cutoff. Its changed bytes now produce a SHA-256 mismatch, so the audit excludes it.
+3. The drill restores the original bytes, verifies that the full audit matches the first result, and removes the temporary copy.
+
+Compare the quarterly statement with the edited schedule. One has a matching fingerprint and arrived late. The other arrived in time and fails the integrity check. Both conditions matter when reconstructing what a researcher could use.
+
 ## Verification rules
 
 The [packet manifest](examples/fictional-quarter/packet.json) records each file's publication time, capture time, and SHA-256 digest. The audit checks the bytes against the digest and uses the **capture time** to determine whether the file was available by the cutoff. A document can be published before the cutoff and still be captured too late.
